@@ -115,7 +115,7 @@ curl "https://newsapi.org/v2/top-headlines?country=cl&category=technology&apiKey
 
 # Manejo de errores HTTP
 
-Usa -i o -w para ver los códigos de respuesta HTTP con curl. Ejemplo de mal uso (sin API key):
+Usa -i o -w para ver los códigos de respuesta HTTP con curl. Ejemplo de mal uso (sin API key), hay diferentes tipos de errores HTTP como por ejemplo: 401 API key inválida, 404 Ciudad no encontrada, 429 Límite de solicitudes excedido. A continuación se muestra uno de los errores y su solución:
 
 curl -i "https://newsapi.org/v2/top-headlines?country=cl"
 
