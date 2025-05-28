@@ -4,7 +4,7 @@ el comando a continuación consulta a la API de OpenWeatherMap para obtener el c
 
 curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=30ffbbcab161d62c59ee99d603f37d80&units=metric&lang=es"
 
-#La estructura de la respuesta en JSON
+# La estructura de la respuesta en JSON
 
 El comando con JSON nos da respuesta con los datos del clima, temperatura, humedad, presión, descripción del cielo y velocidad del viento, que luego se puede analizar o guardar.
 
@@ -56,13 +56,13 @@ curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=30ff
   "cod": 200
 }
 
-#Comando Curl para obtener las noticias del dia
+# Comando Curl para obtener las noticias del dia
 
 Con este comando se pueden obtener las noticias del dia en chile 
 
 curl "https://newsapi.org/v2/top-headlines?country=cl&apiKey=b516d2284f1243c8a894c3c0d7c583e4" | jq
 
-#Comando Curl para obtener información de Chile (Moneda, Población, capital)
+# Comando Curl para obtener información de Chile (Moneda, Población, capital)
 
 Con este comando de curl mas JSON podemos obtener la informacion de la Moneda, Capital y Población
 
