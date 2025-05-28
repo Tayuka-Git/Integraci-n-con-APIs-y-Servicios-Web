@@ -53,6 +53,7 @@ curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=30ff
   "name": "La Serena",
   "cod": 200
 }
+
 #Comando Curl para obtener las noticias del dia
 Con este comando se pueden obtener las noticias del dia en chile 
 
