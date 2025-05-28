@@ -79,4 +79,13 @@ curl https://restcountries.com/v3.1/name/chile | jq ".[] | {Capital: .capital[0]
   }
 }
 
-URL utilizada: https://restcountries.com/v3.1/name/chile
+La respuesta de la API https://restcountries.com/v3.1/name/chile es una lista que contiene un solo objeto con los datos de Chile.
+
+Dentro de este objeto:
+
+"capital" es una lista que contiene la capital del país. En el caso de Chile, es ["Santiago"], por lo que se accede como capital[0].
+
+"population" indica la población total, como 19116209. Es un número entero.
+
+"currencies" es un objeto donde la clave es el código de la moneda (por ejemplo, "CLP"). Dentro de ese objeto, encontramos "name" (por ejemplo, "Chilean peso") y "symbol" (por ejemplo, "$").
+
