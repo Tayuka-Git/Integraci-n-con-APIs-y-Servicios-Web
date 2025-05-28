@@ -4,6 +4,7 @@ el comando a continuación consulta a la API de OpenWeatherMap para obtener el c
 Puedes remplazar en TU_API_KEY con tu propia clave API de la pagina openweathermap.org para obtener la información del clima.
 
 curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=30ffbbcab161d62c59ee99d603f37d80&units=metric&lang=es"
+
 curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=TU_API_KEY&units=metric&lang=es"
 
 # La estructura de la respuesta en JSON
@@ -12,6 +13,7 @@ El comando con JSON nos da respuesta con los datos del clima, temperatura, humed
 Aqui tambien puedes usar tu porpia API KEY para obtener la información
 
 curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=30ffbbcab161d62c59ee99d603f37d80&units=metric&lang=es" | jq
+
 curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=TU_API_KEY&units=metric&lang=es" | jq
 
 {
@@ -65,6 +67,7 @@ curl "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid=TU_A
 Con este comando se pueden obtener las noticias del dia en chile 
 
 curl "https://newsapi.org/v2/top-headlines?country=cl&apiKey=b516d2284f1243c8a894c3c0d7c583e4" | jq
+
 curl "https://newsapi.org/v2/top-headlines?country=cl&apiKey=TU_API_KEY" | jq
 
 # Comando Curl para obtener información de Chile (Moneda, Población, capital)
@@ -99,6 +102,7 @@ Dentro de este objeto:
 Con este comando puedes obtener el pronóstico de 5 días del clima
 
 curl "http://api.openweathermap.org/data/2.5/forecast?q=Santiago,CL&units=metric&appid=30ffbbcab161d62c59ee99d603f37d80"
+
 curl "http://api.openweathermap.org/data/2.5/forecast?q=Santiago,CL&units=metric&appid=TU_API_KEY"
 
 # Filtrado de Noticias
@@ -106,6 +110,7 @@ curl "http://api.openweathermap.org/data/2.5/forecast?q=Santiago,CL&units=metric
 Con este comando puedes hacer un filtrado de las noticias con la categoria que gustes
 
 curl "https://newsapi.org/v2/top-headlines?country=cl&category=technology&apiKey=b516d2284f1243c8a894c3c0d7c583e4"
+
 curl "https://newsapi.org/v2/top-headlines?country=cl&category=technology&apiKey=TU_API_KEY"
 
 # Manejo de errores HTTP
@@ -135,6 +140,7 @@ Como se puede ver nos muestra el error HTTP 401 Unauthorized, lo que significa q
 Esto se soluciona colocando el parametro apikey en el comando como se muestra a continuación:
 
 curl -i "https://newsapi.org/v2/top-headlines?country=cl&apiKey=b516d2284f1243c8a894c3c0d7c583e4"
+
 curl -i "https://newsapi.org/v2/top-headlines?country=cl&apiKey=TU_API_KEY"
 
 HTTP/1.1 401 Unauthorized
