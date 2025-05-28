@@ -137,29 +137,12 @@ server-timing: cfL4;desc="?proto=TCP&rtt=112811&min_rtt=110950&rtt_var=34663&sen
 {"status":"error","code":"apiKeyMissing","message":"Your API key is missing. Append this to the URL with the apiKey param, or use the x-api-key HTTP header."}
 
 Como se puede ver nos muestra el error HTTP 401 Unauthorized, lo que significa que falta la API_KEY o que la API_KEY es incorrecta, Esto significa que la API requiere autenticación mediante una clave, y no se proporciono en el parámetro apiKey.
-Esto se soluciona colocando el parametro apikey en el comando como se muestra a continuación:
+Esto se soluciona colocando el parametro apiKey en el comando como se muestra a continuación:
 
 curl -i "https://newsapi.org/v2/top-headlines?country=cl&apiKey=b516d2284f1243c8a894c3c0d7c583e4"
 
 curl -i "https://newsapi.org/v2/top-headlines?country=cl&apiKey=TU_API_KEY"
 
-HTTP/1.1 401 Unauthorized
-Date: Wed, 28 May 2025 20:21:58 GMT
-Content-Type: application/json; charset=utf-8
-Content-Length: 158
-Connection: keep-alive
-Cache-Control: no-cache
-Pragma: no-cache
-Expires: -1
-cf-cache-status: DYNAMIC
-Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=BUGRZjg6WEZhT6KkJaGNGLPQNyUPQvtKiD5JZ9jCT%2B8UU1CZjyaW%2BvRNTW6%2B%2BFcszCJ5PYIyLfi5fjSWhZE95yAiRQpvuff8FxGoOejfVWJgb3dFZBmbhoZLL%2Fy%2B"}],"group":"cf-nel","max_age":604800}
-NEL: {"success_fraction":0,"report_to":"cf-nel","max_age":604800}
-Server: cloudflare
-CF-RAY: 9470761e2c25498a-MIA
-server-timing: cfL4;desc="?proto=TCP&rtt=112811&min_rtt=110950&rtt_var=34663&sent=5&recv=6&lost=0&retrans=0&sent_bytes=3129&recv_bytes=666&delivery_rate=34390&cwnd=252&unsent_bytes=0&cid=75dbc8a53f01a324&ts=186&x=0"
-
-{"status":"error","code":"apiKeyMissing","message":"Your API key is missing. Append this to the URL with the apiKey param, or use the x-api-key HTTP header."}
-C:\Users\alexi>curl -i "https://newsapi.org/v2/top-headlines?country=cl&apiKey=b516d2284f1243c8a894c3c0d7c583e4"
 HTTP/1.1 200 OK
 Date: Wed, 28 May 2025 20:32:21 GMT
 Content-Type: application/json; charset=utf-8
