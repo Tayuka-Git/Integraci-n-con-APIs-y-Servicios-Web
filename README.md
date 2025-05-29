@@ -226,7 +226,7 @@ La clave de OpenWeatherMap (gratis en openweathermap.org).
 
 Clave de NewsAPI (gratis en newsapi.org).
 
-Ejecución del programa
+Ejecución del programa:
 
 Corre el archivo Main.py 
 
