@@ -266,4 +266,9 @@ Tambien es necesario para el codigo ya que sin esa credencial que proporciona Gm
 
 #token.json
 
-El archivo token tambien es necesario ya que es esencial para la autenticación con la API de Gmail sin necesidad de ingresar credenciales manualmente cada vez que se ejecuta el programa.
+El archivo token tambien es necesario ya que es esencial para la autenticación con la API de Gmail sin necesidad de ingresar credenciales manualmente cada vez que se ejecuta el programa, Esta se genera automaticamente al correr por primera vez el comando.
+
+#requerements.txt
+
+requerements    
+python dotenv
