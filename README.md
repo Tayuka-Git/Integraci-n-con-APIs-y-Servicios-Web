@@ -165,28 +165,28 @@ Y como se puede ver ahora nos muestra HTTP 200 OK, lo que significa que la solic
 
 # Documentacion sobre las APIS
 OpenWeatherMap API
-¿Para qué?
-Obtener el clima actual de La Serena: temperatura, humedad y descripción.
+¿Que informacion da?
+Da la informacion sobre el clima actual de La Serena: temperatura, humedad y descripción.
 Ejemplo:
 "Clima: 18°C, Soleado."
 
 NewsAPI
-¿Para qué?
-Traer las 3 noticias más importantes de Chile.
+¿Que nos proporciona?
+Nos da las 3 noticias más importantes de Chile.
 Ejemplo:
 "Noticia: Nuevas leyes laborales (CNN Chile)."
 
 REST Countries API
-¿Para qué?
-Mostrar datos básicos de Chile: capital, población y moneda.
+¿Que es lo que hace?
+Muestra datos básicos de Chile: capital, población y moneda.
 Ejemplo:
 "Capital: Santiago | Población: 19 millones."
 
 Gmail API
-¿Para qué?
-Enviar el resumen diario por correo automáticamente.
+¿Para qué se usa ?
+Envia el resumen diario por correo automáticamente.
 ¿Cómo?
-Usa credentials.json para permisos seguros.
+Usando credentials.json para permisos seguros.
 
 ¿Cómo trabajan juntas?
 dashboard.py: Junta todos los datos (clima + noticias + país).
