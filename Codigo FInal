@@ -1,0 +1,269 @@
+#Cada unos de los codigos son un archivo distinto para el codigo que esta almacenado en uno solo llamado weather_news_dashboard
+
+# Clima.py
+
+import requests
+from config import OPENWEATHER_API_KEY  # Importa la clave API desde config.py
+
+def obtener_clima():
+    # URL de la API con parámetros: ciudad (La Serena), país (CL), unidades métricas y lenguaje español
+    url = "http://api.openweathermap.org/data/2.5/weather?q=La%20Serena,CL&appid={}&units=metric&lang=es".format(OPENWEATHER_API_KEY)
+    
+    # Hace la petición GET a la API
+    response = requests.get(url)
+    
+    # Extrae y devuelve solo los datos relevantes en un diccionario
+    return {
+        "ciudad": "La Serena",  # Nombre fijo (podría dinamizarse)
+        "temperatura": response.json()["main"]["temp"],  # Temp en °C
+        "humedad": response.json()["main"]["humidity"],  # Humedad en %
+        "condicion": response.json()["weather"][0]["description"]  # Ej: "cielo claro"
+    }
+
+# config.py
+
+import os
+from dotenv import load_dotenv  # Para cargar variables de entorno desde .env
+
+# Carga variables de entorno (si existe .env)
+load_dotenv()
+
+# Configuración de APIs (usa valores de .env o valores por defecto)
+OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY', '30ffbbcab161d62c59ee99d603f37d80')
+NEWS_API_KEY = os.getenv('NEWS_API_KEY', 'b516d2284f1243c8a894c3c0d7c583e4') #aqui estan agregadas mis llaves pero esas llaves pueden ser cambiadas 
+GMAIL_RECIPIENT = "reynaneon09@gmail.com"  # Destinatario fijo
+
+# dashboard.py
+
+# Importaciones necesarias
+from datetime import datetime  # Para manejar fechas/horas
+from Clima import obtener_clima  # Función que obtiene datos del clima
+from Noticias import obtener_noticias  # Función que obtiene noticias
+from Paises import obtener_info_chile  # Función que obtiene datos de Chile
+from Gmail import enviar_reporte  # Función que envía el correo
+import logging  # Para registrar eventos/errores
+
+# Configuración básica de logging (registro de actividad)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def generar_reporte():
+    """
+    Función principal que:
+    1. Obtiene datos de clima, noticias y país
+    2. Formatea el reporte
+    3. Lo envía por correo
+    """
+    try:
+        logger.info("🔄 Generando reporte...")
+        
+        # --- 1. OBTENER DATOS ---
+        clima = obtener_clima()  # Llama a la API del clima
+        noticias = obtener_noticias()  # Llama a la API de noticias
+        pais = obtener_info_chile()  # Llama a la API de países
+
+        # --- 2. FORMATEAR REPORTE ---
+        # Encabezado con fecha/hora actual
+        cuerpo_reporte = f"""
+        🌎 Reporte Diario - Chile 🇨🇱
+        📅 Fecha: {datetime.now().strftime('%d/%m/%Y %H:%M')}
+        """
+
+        # Sección del clima
+        cuerpo_reporte += f"""
+        🌤️ Clima en {clima['ciudad']}:
+        - Temperatura: {clima['temperatura']}°C
+        - Humedad: {clima['humedad']}%
+        - Condición: {clima['condicion'].capitalize()}
+        """
+
+        # Sección de noticias (solo las 3 primeras)
+        cuerpo_reporte += "\n📰 Últimas noticias:\n"
+        for i, noticia in enumerate(noticias[:3], 1):
+            cuerpo_reporte += f"  {i}. {noticia['titulo']} ({noticia['fuente']})\n"
+
+        # Sección del país
+        cuerpo_reporte += f"""
+        ℹ️ Información del país:
+        - Capital: {pais['capital']}
+        - Población: {pais['poblacion']:,}
+        - Moneda: {pais['moneda']}
+        """
+
+        # --- 3. ENVÍO DEL CORREO ---
+        asunto = f"Reporte Chile {datetime.now().strftime('%d/%m')}"
+        enviar_reporte(asunto, cuerpo_reporte.strip())  # strip() elimina espacios extras
+        
+        logger.info("✅ Reporte generado y enviado")
+        return cuerpo_reporte
+
+    except Exception as e:
+        logger.error(f"❌ Error al generar reporte: {str(e)}")
+        return None
+
+# Noticias.py
+
+import requests
+from config import NEWS_API_KEY  # Importa la clave API desde config.py
+
+def obtener_noticias():
+    # URL para obtener titulares de Chile (country=cl)
+    url = f"https://newsapi.org/v2/top-headlines?country=cl&apiKey={NEWS_API_KEY}"
+    
+    # Petición GET y conversión a JSON
+    response = requests.get(url)
+    
+    # Procesa los artículos: lista de diccionarios con título y fuente
+    return [
+        {
+            "titulo": art["title"],  # Titular de la noticia
+            "fuente": art["source"]["name"]  # Nombre del medio (ej: "CNN Chile")
+        } 
+        for art in response.json()["articles"][:3]  # Solo los 3 primeros
+    ]
+
+# Gmail.py
+
+import os
+import base64
+from email.mime.text import MIMEText
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google_auth_oauthlib.flow import InstalledAppFlow
+import logging
+
+# Configuración básica de logs (registra errores y eventos)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Permisos necesarios (solo para enviar correos)
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+
+def autenticar_gmail():
+    """Autentica con Gmail API usando OAuth 2.0"""
+    creds = None
+    
+    # 1. Intenta cargar credenciales existentes (token.json)
+    if os.path.exists('token.json'):
+        try:
+            creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+            logger.info("✅ Token cargado exitosamente")
+        except Exception as e:
+            logger.error(f"❌ Token corrupto. Generando uno nuevo: {e}")
+            os.remove('token.json')  # Elimina el token inválido
+    
+    # 2. Si no hay credenciales válidas, inicia flujo de autenticación
+    if not creds or not creds.valid:
+        flow = InstalledAppFlow.from_client_secrets_file(
+            'credentials.json',  # Archivo descargado de Google Cloud
+            SCOPES
+        )
+        # Abre el navegador para autenticación
+        creds = flow.run_local_server(port=0)
+        
+        # Guarda las credenciales para futuras ejecuciones
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+        logger.info("✅ Nuevo token generado")
+    
+    # Retorna el servicio de Gmail autenticado
+    return build('gmail', 'v1', credentials=creds)
+
+def enviar_reporte(asunto, cuerpo, destinatario="reynaneon09@gmail.com"):
+    """Envía un correo electrónico con el reporte"""
+    try:
+        # 1. Autenticación
+        service = autenticar_gmail()
+        
+        # 2. Crea el mensaje en formato MIME
+        mensaje = MIMEText(cuerpo)  # Cuerpo del correo como texto plano
+        mensaje['to'] = destinatario
+        mensaje['subject'] = asunto
+        
+        # 3. Codifica el mensaje en base64 (requerido por Gmail API)
+        raw = base64.urlsafe_b64encode(mensaje.as_bytes()).decode()
+        
+        # 4. Envía el correo
+        message = service.users().messages().send(
+            userId="me",  # "me" refiere al usuario autenticado
+            body={'raw': raw}
+        ).execute()
+        
+        logger.info(f"📧 Correo enviado! ID: {message['id']}")
+        return True
+    except HttpError as error:
+        logger.error(f"❌ Error de Gmail API: {error}")
+    except Exception as e:
+        logger.error(f"❌ Error inesperado: {e}")
+    return False
+
+# Paises.py
+
+# Importa la librería 'requests' para hacer peticiones HTTP
+import requests
+
+def obtener_info_chile():
+    """
+    Obtiene información básica de Chile desde la API REST Countries.
+    Returns:
+        dict: Diccionario con datos clave del país.
+    """
+    
+    # 1. Hace la petición GET a la API
+    response = requests.get("https://restcountries.com/v3.1/name/chile")
+    
+    # Extrae el primer resultado (la API devuelve una lista)
+    data = response.json()[0]
+    
+    # 2. Procesa y devuelve solo los datos relevantes
+    return {
+        "nombre": data["name"]["common"],  # Nombre común del país ("Chile")
+        "capital": data["capital"][0],     # Primera capital del array (Santiago)
+        "poblacion": data["population"],   # Población total
+        "moneda": list(data["currencies"].keys())[0]  # Código de la moneda (CLP)
+    }
+
+# Main.py
+
+import schedule
+import time
+from dashboard import generar_reporte  # Importa la función que genera el reporte
+import logging
+
+# Configura logs para ver el estado del programa
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+def programar_envio():
+    """Configura el envío diario a las 8:00 AM"""
+    logger.info("⏳ Programando envío diario a las 8:00 AM...")
+    
+    # Programa la tarea (todos los días a las 8 AM)
+    schedule.every().day.at("08:00").do(
+        lambda: logger.info("🕗 Enviando reporte...") or generar_reporte()
+    )
+    
+    # Primera ejecución inmediata (opcional)
+    generar_reporte()
+    
+    # Bucle infinito para mantener el programa corriendo
+    while True:
+        schedule.run_pending()  # Verifica tareas programadas
+        time.sleep(60)  # Espera 60 segundos antes de revisar nuevamente
+
+if __name__ == "__main__":
+    try:
+        programar_envio()
+    except KeyboardInterrupt:
+        logger.info("🔴 Programa detenido manualmente")
+    except Exception as e:
+        logger.error(f"❌ Error crítico: {e}")
+
+# credentials.py
+
+Tambien es necesario para el codigo ya que sin esa credencial que proporciona GmailAPI no se podria utilizar el codigo y daria error al no encontrar el archivo.
+
+#token.json
+
+El archivo token tambien es necesario ya que es esencial para la autenticación con la API de Gmail sin necesidad de ingresar credenciales manualmente cada vez que se ejecuta el programa.
