@@ -201,13 +201,18 @@ Descarga e instala desde python.org.
 
 Archivos esenciales
 credentials.json (obtenido desde Google Cloud Console para la API de Gmail).
+
 token.json (se genera automáticamente la primera vez que se ejecuta).
 
 Librerías necesarias
 requests
+
 python-dotenv
+
 google-api-python-client
+
 google-auth-oauthlib
+
 schedule
 
 Se puedenen instalar con el siguiente comando:
@@ -215,6 +220,7 @@ pip install requests python-dotenv google-api-python-client google-auth-oauthlib
 
 APIs y claves necesarias
 Clave de OpenWeatherMap (gratis en openweathermap.org).
+
 Clave de NewsAPI (gratis en newsapi.org).
 
 Ejecución del programa
