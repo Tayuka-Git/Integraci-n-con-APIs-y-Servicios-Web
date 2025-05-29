@@ -193,7 +193,7 @@ dashboard.py: Junta todos los datos (clima + noticias + país).
 gmail.py: Envía el resumen final a tu correo todos los días a las 8 AM.
 
 
-#Requisitos para hacer funcionar el codigo
+# Requisitos para hacer funcionar el codigo
 
 Requisitos para Ejecutar el Código
 Python 3.8+
