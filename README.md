@@ -233,3 +233,6 @@ Corre el archivo Main.py
 ¡Listo! El sistema enviará un reporte diario a las 8 AM o cuando lo ejecutes manualmente.
 
 Nota: La primera vez que ejecutes el programa, se abrirá el navegador para autenticar tu cuenta de Gmail (solo ocurre una vez).
+
+
+Link del Video: https://youtu.be/PB16p5sdfJU
