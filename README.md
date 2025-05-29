@@ -163,5 +163,32 @@ server-timing: cfL4;desc="?proto=TCP&rtt=139113&min_rtt=122575&rtt_var=46775&sen
 
 Y como se puede ver ahora nos muestra HTTP 200 OK, lo que significa que la solicitud fue exitosa.
 
-# Requisitos para el codigo
+# Documentacion sobre las APIS
+OpenWeatherMap API
+¿Para qué?
+Obtener el clima actual de La Serena: temperatura, humedad y descripción.
+Ejemplo:
+"Clima: 18°C, Soleado."
+
+NewsAPI
+¿Para qué?
+Traer las 3 noticias más importantes de Chile.
+Ejemplo:
+"Noticia: Nuevas leyes laborales (CNN Chile)."
+
+REST Countries API
+¿Para qué?
+Mostrar datos básicos de Chile: capital, población y moneda.
+Ejemplo:
+"Capital: Santiago | Población: 19 millones."
+
+Gmail API
+¿Para qué?
+Enviar el resumen diario por correo automáticamente.
+¿Cómo?
+Usa credentials.json para permisos seguros.
+
+¿Cómo trabajan juntas?
+dashboard.py: Junta todos los datos (clima + noticias + país).
+gmail.py: Envía el resumen final a tu correo todos los días a las 8 AM.
 
