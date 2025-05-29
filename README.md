@@ -197,7 +197,7 @@ gmail.py: Envía el resumen final a tu correo todos los días a las 8 AM.
 
 Requisitos para Ejecutar el Código
 Python 3.8+ 
-Se Descarga e instala desde python.org.
+este se Descarga e instala desde python.org.
 
 Archivos esenciales
 
