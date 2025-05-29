@@ -162,3 +162,6 @@ server-timing: cfL4;desc="?proto=TCP&rtt=139113&min_rtt=122575&rtt_var=46775&sen
 {"status":"ok","totalResults":0,"articles":[]}
 
 Y como se puede ver ahora nos muestra HTTP 200 OK, lo que significa que la solicitud fue exitosa.
+
+# Requisitos para el codigo
+
