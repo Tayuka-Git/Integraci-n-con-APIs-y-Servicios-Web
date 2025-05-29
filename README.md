@@ -196,15 +196,17 @@ gmail.py: Envía el resumen final a tu correo todos los días a las 8 AM.
 # Requisitos para hacer funcionar el codigo
 
 Requisitos para Ejecutar el Código
-Python 3.8+
-Descarga e instala desde python.org.
+Python 3.8+ 
+Se Descarga e instala desde python.org.
 
 Archivos esenciales
+
 credentials.json (obtenido desde Google Cloud Console para la API de Gmail).
 
 token.json (se genera automáticamente la primera vez que se ejecuta).
 
-Librerías necesarias
+Librerías necesarias:
+
 requests
 
 python-dotenv
@@ -218,12 +220,14 @@ schedule
 Se puedenen instalar con el siguiente comando:
 pip install requests python-dotenv google-api-python-client google-auth-oauthlib schedule
 
-APIs y claves necesarias
-Clave de OpenWeatherMap (gratis en openweathermap.org).
+Las APis y Claves que son necesarias son las de:
+
+La clave de OpenWeatherMap (gratis en openweathermap.org).
 
 Clave de NewsAPI (gratis en newsapi.org).
 
 Ejecución del programa
+
 Corre el archivo Main.py 
 
 ¡Listo! El sistema enviará un reporte diario a las 8 AM o cuando lo ejecutes manualmente.
