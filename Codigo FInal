@@ -226,39 +226,96 @@ def obtener_info_chile():
 
 # Main.py
 
+#!/usr/bin/env python3
+"""
+Programa principal mejorado para:
+- Ejecución diaria a las 8:00 AM
+- Manejo robusto de errores
+- Registro de actividad
+- Auto-recuperación
+"""
+
 import schedule
 import time
-from dashboard import generar_reporte  # Importa la función que genera el reporte
 import logging
+from datetime import datetime
+from dashboard import generar_reporte
 
-# Configura logs para ver el estado del programa
-logging.basicConfig(level=logging.INFO)
+# Configuración avanzada de logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger(__name__)
 
-def programar_envio():
-    """Configura el envío diario a las 8:00 AM"""
-    logger.info("⏳ Programando envío diario a las 8:00 AM...")
-    
-    # Programa la tarea (todos los días a las 8 AM)
-    schedule.every().day.at("08:00").do(
-        lambda: logger.info("🕗 Enviando reporte...") or generar_reporte()
-    )
-    
-    # Primera ejecución inmediata (opcional)
-    generar_reporte()
-    
-    # Bucle infinito para mantener el programa corriendo
-    while True:
-        schedule.run_pending()  # Verifica tareas programadas
-        time.sleep(60)  # Espera 60 segundos antes de revisar nuevamente
+class ReportScheduler:
+    def __init__(self):
+        self.max_retries = 3
+        self.retry_count = 0
+
+    def safe_report_generation(self):
+        """Genera el reporte con manejo de errores y reintentos"""
+        try:
+            logger.info("⏳ Iniciando generación de reporte...")
+            if generar_reporte():
+                logger.info("✅ Reporte generado y enviado correctamente")
+                self.retry_count = 0  # Resetear contador de reintentos
+            else:
+                raise Exception("La función generar_reporte() devolvió False")
+                
+        except Exception as e:
+            self.retry_count += 1
+            logger.error(f"⚠️ Intento {self.retry_count}/{self.max_retries} fallido: {str(e)}")
+            
+            if self.retry_count >= self.max_retries:
+                logger.critical("🛑 Máximo de reintentos alcanzado")
+                self.send_failure_alert()
+                self.retry_count = 0  # Resetear después de alerta
+                
+            time.sleep(60 * self.retry_count)  # Backoff exponencial
+
+    def send_failure_alert(self):
+        """Envía alerta cuando fallan múltiples intentos"""
+        alert_msg = f"""
+        🚨 FALLO CRÍTICO EN WEATHER REPORTER
+        ---------------------------------
+        Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        Fallos consecutivos: {self.max_retries}
+        """
+        try:
+            from Gmail import enviar_reporte
+            enviar_reporte("ALERTA: Fallo en Reporte Diario", alert_msg)
+        except Exception as e:
+            logger.error(f"📧 Fallo al enviar alerta: {str(e)}")
+
+    def run(self):
+        """Inicia el programador principal"""
+        try:
+            # Programación regular
+            schedule.every().day.at("08:00").do(self.safe_report_generation)
+            
+            # Ejecución inmediata (opcional)
+            logger.info("🚀 Iniciando servicio de reportes meteorológicos")
+            self.safe_report_generation()
+            
+            # Bucle principal
+            while True:
+                schedule.run_pending()
+                time.sleep(1)  # Reduce consumo de CPU vs sleep(60)
+                
+        except KeyboardInterrupt:
+            logger.info("👋 Detenido por el usuario")
+        except Exception as e:
+            logger.critical(f"💥 Error crítico: {str(e)}")
+            raise
 
 if __name__ == "__main__":
-    try:
-        programar_envio()
-    except KeyboardInterrupt:
-        logger.info("🔴 Programa detenido manualmente")
-    except Exception as e:
-        logger.error(f"❌ Error crítico: {e}")
+    scheduler = ReportScheduler()
+    scheduler.run()
 
 # credentials.py
 
@@ -272,3 +329,10 @@ El archivo token tambien es necesario ya que es esencial para la autenticación 
 
 requerements    
 python dotenv
+
+#ejecutar_reporte.bat
+
+@echo off
+cd /d "C:\Users\alexi\OneDrive\Escritorio\weather_news_dashboard"
+python Main.py
+pause
